@@ -37,7 +37,6 @@ The frontend is built using React to provide a dynamic and interactive user expe
 
 -   **Docker**: Used for containerizing the application, ensuring consistent environments across development, testing, and production.
 -   **Webpack**: Bundles assets, scripts, and styles for the frontend.
--   **Babel**: Transpiles ES6+ JavaScript to ensure compatibility across all browsers.
 
 ## Setup and Installation
 
