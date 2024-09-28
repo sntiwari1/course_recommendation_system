@@ -29,7 +29,7 @@ function Login({ loginUser, auth, error }) {
             setMessage("Login Successful");
             setSeverity("success");
             setOpen(true);
-            setTimeout(() => navigate("/recommendations"), 600); // Redirect to recommendations page after login
+            setTimeout(() => navigate("/recommendations"), 600);
         }
 
         if (error) {

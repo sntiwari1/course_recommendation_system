@@ -18,7 +18,7 @@ function Navbar({ auth, logoutUser }) {
                 Recommendations
             </Button>
             <Button color="inherit" component={Link} to="/courses">
-                Courses
+                Enrolled Courses
             </Button>
             <Button color="inherit" onClick={handleLogout}>
                 Logout

@@ -3,6 +3,7 @@
 from django.db import models
 from django.conf import settings
 from courses.models import Course
+from users.models import CustomUser
 
 class UserCourseInteraction(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -17,3 +18,14 @@ class OpenAIPrompt(models.Model):
 
     def __str__(self):
         return self.prompt[:50]
+
+class UserRecommendation(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='recommendations')
+    recommendation = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.user.email}: {self.recommendation[:50]}"

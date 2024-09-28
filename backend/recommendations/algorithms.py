@@ -1,7 +1,8 @@
 # recommendations/algorithms.py
 
 from django.db.models import Q
-from .models import OpenAIPrompt, Course
+from .models import OpenAIPrompt, Course, UserRecommendation
+from django.conf import settings
 import openai
 
 def get_custom_prompt_for_recommendation(user):
@@ -11,7 +12,10 @@ def get_custom_prompt_for_recommendation(user):
         return "No prompt available"
 
     # Fetch all courses
-    courses = Course.objects.all()
+    courses = Course.objects.filter(user=user)
+    if not courses.exists():
+        return "No courses available for this user."
+
     course_titles = ', '.join(course.title for course in courses)
 
     # Create full prompt by appending course titles to the prompt content
@@ -20,7 +24,7 @@ def get_custom_prompt_for_recommendation(user):
     return full_prompt
 
 def ask_chatgpt(full_prompt):
-    openai.api_key = ""
+    openai.api_key = settings.OPENAI_API_KEY
     # Call the OpenAI API with the combined prompt
     response = openai.ChatCompletion.create(
         model='gpt-3.5-turbo',  # Ensure this matches the model you have access to
@@ -35,8 +39,23 @@ def ask_chatgpt(full_prompt):
     message = response.choices[0]['message']
     return message['content']
 
+def update_user_recommendations(user, new_recommendation):
+    # Check existing count of recommendations
+    existing_recommendations = UserRecommendation.objects.filter(user=user)
+    if existing_recommendations.count() >= 2:
+        # Delete the oldest recommendation
+        oldest_recommendation = existing_recommendations.last()
+        oldest_recommendation.delete()
+
+    # Add the new recommendation
+    UserRecommendation.objects.create(user=user, recommendation=new_recommendation)
+
 # Example usage within your Django application or script
 def get_recommendations_for_user(user):
     full_prompt = get_custom_prompt_for_recommendation(user)
     recommendation_response = ask_chatgpt(full_prompt)
+    try:
+        update_user_recommendations(user, recommendation_response)
+    except:
+        return "Please try again later!"
     return recommendation_response

@@ -1,42 +1,18 @@
 // src/actions/courseActions.js
-import axios from "axios";
 import axiosInstance from "../utils/axiosInstance";
-import {
-    FETCH_RECOMMENDATIONS_SUCCESS,
-    FETCH_RECOMMENDATIONS_FAIL,
-} from "./types";
-
 export const fetchRecommendations = () => (dispatch) => {
-    axiosInstance
+    return axiosInstance
         .get("/recommendations")
-        .then((res) => {
-            console.log("Recommendations fetched:", res.data);
+        .then((response) => {
             dispatch({
-                type: FETCH_RECOMMENDATIONS_SUCCESS,
-                payload: res.data,
+                type: "FETCH_RECOMMENDATIONS_SUCCESS",
+                payload: response.data.recommendations,
             });
+            return response.data; // Return data so it can be used in .then() in your component
         })
-        .catch((err) => {
-            console.error("Fetching recommendations failed:", err);
-            if (err.response) {
-                // The request was made and the server responded with a status code
-                // that falls out of the range of 2xx
-                console.error("Error data:", err.response.data);
-                console.error("Error status:", err.response.status);
-                console.error("Error headers:", err.response.headers);
-            } else if (err.request) {
-                // The request was made but no response was received
-                console.error("No response received");
-            } else {
-                // Something happened in setting up the request that triggered an Error
-                console.error("Error message:", err.message);
-            }
-            dispatch({
-                type: FETCH_RECOMMENDATIONS_FAIL,
-                payload: err.response
-                    ? err.response.data
-                    : { error: "Network Error" },
-            });
+        .catch((error) => {
+            dispatch({ type: "FETCH_RECOMMENDATIONS_ERROR", error });
+            console.error("Failed to fetch recommendations:", error);
         });
 };
 

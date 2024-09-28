@@ -1,36 +1,95 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { fetchRecommendations } from "../../actions/courseActions";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-import Paper from "@mui/material/Paper";
-import Box from "@mui/material/Box"; // Import Box component for styling
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
+import axiosInstance from "../../utils/axiosInstance";
 
 function RecommendationList({ recommendations, fetchRecommendations }) {
-    useEffect(() => {
-        fetchRecommendations();
-    }, [fetchRecommendations]);
+    const [recs, setRecs] = useState(recommendations || []);
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [loading, setLoading] = useState(false);
+    const [fetched, setFetched] = useState(false);
 
-    const createMarkup = (htmlContent) => {
-        return { __html: htmlContent };
+    useEffect(() => {
+        if ((!recommendations || recommendations.length === 0) && !fetched) {
+            setLoading(true);
+            fetchRecommendations()
+                .then((data) => {
+                    if (data && data.recommendations) {
+                        setRecs(data.recommendations);
+                        setCurrentIndex(0);
+                    }
+                    setLoading(false);
+                })
+                .catch(() => setLoading(false))
+                .finally(() => setFetched(true));
+        } else {
+            setRecs(recommendations);
+        }
+    }, [fetchRecommendations, recommendations, fetched]);
+
+    const nextRecommendation = () => {
+        const nextIndex = currentIndex + 1 < recs.length ? currentIndex + 1 : 0;
+        setCurrentIndex(nextIndex);
+    };
+
+    const fetchNewRecommendations = () => {
+        setLoading(true);
+        axiosInstance
+            .get("/recommendations/new")
+            .then((response) => {
+                if (response.data["status"] === "success") {
+                    setCurrentIndex(0);
+                    setRecs([]);
+                    setFetched(false);
+                }
+                setLoading(false);
+            })
+            .catch((error) => {
+                console.error("Error fetching new recommendations:", error);
+                setLoading(false);
+            });
     };
 
     return (
         <Container>
             <Typography variant="h6" component="h4" gutterBottom>
-                Recommended Courses
+                Recommendations
             </Typography>
-            <Paper style={{ padding: "20px", marginTop: "20px" }}>
-                {recommendations ? (
-                    <Box
-                        dangerouslySetInnerHTML={createMarkup(recommendations)}
-                    />
+            <Button
+                variant="contained"
+                color="primary"
+                onClick={fetchNewRecommendations}
+                disabled={loading}
+                style={{ marginBottom: "20px" }}
+            >
+                {loading ? (
+                    <CircularProgress size={24} />
                 ) : (
-                    <Typography variant="body2" component="p">
-                        No recommendations available.
-                    </Typography>
+                    "New Recommendation"
                 )}
-            </Paper>
+            </Button>
+            {recs.length > 0 ? (
+                <Box
+                    sx={{ marginBottom: 2 }}
+                    dangerouslySetInnerHTML={{ __html: recs[currentIndex] }}
+                />
+            ) : (
+                <Typography>No recommendations available.</Typography>
+            )}
+            <Button
+                variant="contained"
+                color="primary"
+                onClick={nextRecommendation}
+                disabled={recs.length === 0}
+                style={{ marginBottom: "20px" }}
+            >
+                Next Recommendation
+            </Button>
         </Container>
     );
 }

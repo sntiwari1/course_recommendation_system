@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-md#ke9-2o61v_z*dbp-h3bzmu&*b7bv!vxtg*f)^k=6%x&ouq%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["http://127.0.0.1",'*']
+ALLOWED_HOSTS = ["http://127.0.0.1:3000", "http://localhost:3000", '*']
 
 
 # Application definition
@@ -47,10 +47,10 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -87,13 +87,11 @@ REST_FRAMEWORK = {
     ),
 }
 
-CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 
 # Configure CORS
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',  # Frontend URL
-    "http://127.0.0.1",
+    'http://localhost:3000',
     'http://127.0.0.1:3000',
 ]
 
@@ -165,3 +163,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Use your OPEN AI Key here
+OPENAI_API_KEY = ""

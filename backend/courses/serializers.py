@@ -8,3 +8,9 @@ class CourseSerializer(serializers.ModelSerializer):
         model = Course
         fields = ['id', 'title', 'description']
 
+    def create(self, validated_data):
+        validated_data["title"] = validated_data["title_display"]
+        validated_data["user"] = self.context['request'].user
+        del validated_data["title_display"]
+        return super().create(validated_data)
+

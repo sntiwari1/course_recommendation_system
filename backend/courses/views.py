@@ -13,6 +13,15 @@ class CourseViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.SearchFilter]
     search_fields = ['title', 'description']
 
+    def get_queryset(self):
+        """
+        This method overrides the default queryset to return courses that are related to the current user.
+        Assuming 'user' is a direct foreign key in the Course model pointing to the user who owns the course.
+        If 'user' is not a direct relationship, you will need to adjust the filter to match your data model.
+        """
+        user = self.request.user
+        return Course.objects.filter(user=user)
+
 
 #class CourseViewSet(viewsets.ModelViewSet):
 #    # Existing code...
