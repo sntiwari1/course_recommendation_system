@@ -36,9 +36,24 @@ The frontend is built using React to provide a dynamic and interactive user expe
 ### Utilities and Setup
 
 -   **Docker**: Used for containerizing the application, ensuring consistent environments across development, testing, and production.
--   **Webpack**: Bundles assets, scripts, and styles for the frontend.
 
-## Setup and Installation
+    #### Install Docker on Ubuntu
+
+    -   https://docs.docker.com/engine/install/ubuntu/
+
+    ##### Build your containers
+
+    ```bash
+    docker-compose build
+    ```
+
+    ##### Start your application
+
+    ```bash
+    docker-compose up
+    ```
+
+## Manual Setup and Installation
 
 To get the system up and running on your local machine, follow these steps:
 
