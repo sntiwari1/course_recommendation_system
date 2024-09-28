@@ -8,14 +8,29 @@ import {
 
 export const fetchRecommendations = () => (dispatch) => {
     axiosInstance
-        .get("/recommendations/")
+        .get("/recommendations")
         .then((res) => {
+            console.log("Recommendations fetched:", res.data);
             dispatch({
                 type: FETCH_RECOMMENDATIONS_SUCCESS,
                 payload: res.data,
             });
         })
         .catch((err) => {
+            console.error("Fetching recommendations failed:", err);
+            if (err.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                console.error("Error data:", err.response.data);
+                console.error("Error status:", err.response.status);
+                console.error("Error headers:", err.response.headers);
+            } else if (err.request) {
+                // The request was made but no response was received
+                console.error("No response received");
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.error("Error message:", err.message);
+            }
             dispatch({
                 type: FETCH_RECOMMENDATIONS_FAIL,
                 payload: err.response

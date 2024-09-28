@@ -11,21 +11,26 @@ export const loginUser = (credentials, history) => (dispatch) => {
     axiosInstance
         .post("/auth/token/login/", credentials)
         .then((res) => {
-            const { token, user } = res.data;
-            // Save token to localStorage
+            const token = res.data["auth_token"];
             localStorage.setItem("token", token);
-
-            // Set token to Axios headers
             setAuthToken(token);
+
+            // Dispatch success action
             dispatch({
                 type: "LOGIN_SUCCESS",
-                payload: { token, user },
+                payload: { token },
             });
-            history.push("/");
         })
         .catch((err) => {
+            console.error(
+                "Login error:",
+                err.response ? err.response.data : "Unknown error"
+            );
             dispatch({
                 type: "AUTH_ERROR",
+                payload: err.response
+                    ? err.response.data
+                    : { error: "Network Error" },
             });
         });
 };
@@ -48,16 +53,18 @@ export const registerUser = (userData, history) => (dispatch) => {
         });
 };
 
-export const logoutUser = () => (dispatch) => {
+export const logoutUser = (navigate) => (dispatch) => {
     axiosInstance
         .post("/auth/token/logout/")
         .then(() => {
             localStorage.removeItem("token");
             updateAxiosInstanceToken(null);
             dispatch({ type: LOGOUT });
+            navigate("/login"); // Redirect to login after logout
         })
         .catch((err) => {
             // Handle error if necessary
+            console.error("Logout error:", err);
             dispatch({
                 type: AUTH_ERROR,
                 payload: err.response

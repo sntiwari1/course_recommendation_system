@@ -4,6 +4,9 @@ import { connect } from "react-redux";
 import { fetchCourses } from "../../actions/courseActions";
 import CourseItem from "./CourseItem";
 import SearchBar from "../Search/SearchBar";
+import Container from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
+import Grid from "@mui/material/Grid";
 
 function CourseList({ courses, fetchCourses }) {
     useEffect(() => {
@@ -11,13 +14,19 @@ function CourseList({ courses, fetchCourses }) {
     }, [fetchCourses]);
 
     return (
-        <div>
-            <h2>All Courses</h2>
+        <Container>
+            <Typography variant="h4" component="h2" gutterBottom>
+                All Courses
+            </Typography>
             <SearchBar />
-            {courses.map((course) => (
-                <CourseItem key={course.id} course={course} />
-            ))}
-        </div>
+            <Grid container spacing={3}>
+                {courses.map((course) => (
+                    <Grid item xs={12} sm={6} md={4} key={course.id}>
+                        <CourseItem course={course} />
+                    </Grid>
+                ))}
+            </Grid>
+        </Container>
     );
 }
 
