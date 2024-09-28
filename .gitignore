@@ -8,6 +8,8 @@ __pycache__/
 
 # Distribution / packaging
 .Python
+backend/debug.log
+backend/db.sqlite3
 env/
 build/
 develop-eggs/
