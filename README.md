@@ -33,7 +33,111 @@ The frontend is built using React to provide a dynamic and interactive user expe
 -   Allows users to manage their profiles and course enrollments.
 -   Connects to the Django backend via RESTful APIs for real-time data processing.
 
+### PostGreSQL DB Setup
+
+This document provides step-by-step instructions for setting up a PostgreSQL user and database for the CRS system. The following commands are used to create a new user with specific permissions, create a database, and grant the necessary privileges.
+
+**_Create a new user with an encrypted password_**:
+
+    ```sql
+    CREATE USER crs_user WITH ENCRYPTED PASSWORD '<USER_PASSWORD>';
+    ```
+
+    This creates a new user `crs_user` with the password `<USER_PASSWORD>`.
+
+**_Allow the user to create databases_**:
+
+    ```sql
+    ALTER ROLE crs_user CREATEDB;
+    ```
+
+    This grants the `crs_user` permission to create databases.
+
+**_Create the CRS database_**:
+
+    ```sql
+    CREATE DATABASE crs_db;
+    ```
+
+    This creates a new database named `crs_db`.
+
+**_Grant all privileges on the CRS database to the user_**:
+
+    ```sql
+    GRANT ALL PRIVILEGES ON DATABASE crs_db TO crs_user;
+    ```
+
+    This grants the `crs_user` all privileges on the `crs_db` database.
+
+**_Grant all privileges on the `public` schema to the user_**:
+
+    ```sql
+    GRANT ALL PRIVILEGES ON SCHEMA public TO crs_user;
+    ```
+
+    This gives `crs_user` all privileges on the `public` schema in the database.
+
+**_Grant permission to create objects in the `public` schema_**:
+
+    ```sql
+    GRANT CREATE ON SCHEMA public TO crs_user;
+    ```
+
+    This allows the `crs_user` to create new objects in the `public` schema.
+
+**_Make the user a superuser_**:
+
+    ```sql
+    ALTER USER crs_user WITH SUPERUSER;
+    ```
+
+    This grants `crs_user` superuser privileges, allowing full access and control over the PostgreSQL instance.
+
 ### Utilities and Setup
+
+#### Create a .env File
+
+In the root directory of your project, create a .env file with the following content to specify your PostgreSQL database credentials
+
+    ```bash
+    POSTGRES_DB=mydatabase
+    POSTGRES_USER=myuser
+    POSTGRES_PASSWORD=mypassword
+    ```
+
+#### Using PostgreSQL (Microservices Architecture - Django, React, Postgres)
+
+-   **Docker**: Used for containerizing the application, ensuring consistent environments across development, testing, and production.
+
+    #### Install Docker on Ubuntu
+
+    -   https://docs.docker.com/engine/install/ubuntu/
+
+    ##### Build your containers
+
+    ```bash
+    docker-compose build
+    ```
+
+    ##### Start your application
+
+    ```bash
+    docker-compose up
+    ```
+
+    ##### Run Django Migrations:
+
+    Once the containers are rebuilt and running, you can apply your migrations:
+
+    ```bash
+    docker-compose run web python manage.py makemigrations
+    docker-compose run web python manage.py migrate
+    docker-compose run web python manage.py createsuperuser
+    ```
+
+#### Using SQLite (Application is deployed as only two unit, meaning all features are tightly coupled)
+
+SQLite is a serverless, file-based database, meaning it doesn’t function like a typical server-based database (such as MySQL, PostgreSQL, or MongoDB) that runs as a standalone service that other applications connect to over a network.
 
 -   **Docker**: Used for containerizing the application, ensuring consistent environments across development, testing, and production.
 
