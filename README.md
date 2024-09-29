@@ -38,60 +38,32 @@ The frontend is built using React to provide a dynamic and interactive user expe
 This document provides step-by-step instructions for setting up a PostgreSQL user and database for the CRS system. The following commands are used to create a new user with specific permissions, create a database, and grant the necessary privileges.
 
 **_Create a new user with an encrypted password_**:
-
-    ```bash
+    
     CREATE USER crs_user WITH ENCRYPTED PASSWORD '<USER_PASSWORD>';
-    ```
-
-    This creates a new user `crs_user` with the password `<USER_PASSWORD>`.
 
 **_Allow the user to create databases_**:
 
-    ```bash
     ALTER ROLE crs_user CREATEDB;
-    ```
-
-    This grants the `crs_user` permission to create databases.
 
 **_Create the CRS database_**:
 
-    ```bash
     CREATE DATABASE crs_db;
-    ```
-
-    This creates a new database named `crs_db`.
 
 **_Grant all privileges on the CRS database to the user_**:
 
-    ```bash
     GRANT ALL PRIVILEGES ON DATABASE crs_db TO crs_user;
-    ```
-
-    This grants the `crs_user` all privileges on the `crs_db` database.
 
 **_Grant all privileges on the `public` schema to the user_**:
 
-    ```bash
     GRANT ALL PRIVILEGES ON SCHEMA public TO crs_user;
-    ```
-
-    This gives `crs_user` all privileges on the `public` schema in the database.
 
 **_Grant permission to create objects in the `public` schema_**:
 
-    ```bash
     GRANT CREATE ON SCHEMA public TO crs_user;
-    ```
-
-    This allows the `crs_user` to create new objects in the `public` schema.
 
 **_Make the user a superuser_**:
 
-    ```bash
     ALTER USER crs_user WITH SUPERUSER;
-    ```
-
-    This grants `crs_user` superuser privileges, allowing full access and control over the PostgreSQL instance.
 
 ### Utilities and Setup
 
