@@ -71,11 +71,9 @@ This document provides step-by-step instructions for setting up a PostgreSQL use
 
 In the root directory of your project, create a .env file with the following content to specify your PostgreSQL database credentials
 
-    ```bash
     POSTGRES_DB=mydatabase
     POSTGRES_USER=myuser
     POSTGRES_PASSWORD=mypassword
-    ```
 
 #### Using PostgreSQL (Microservices Architecture - Django, React, Postgres)
 
