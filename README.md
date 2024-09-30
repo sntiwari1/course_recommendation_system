@@ -35,7 +35,7 @@ The frontend is built using React to provide a dynamic and interactive user expe
 
 ### PostGreSQL DB Setup
 
-This document provides step-by-step instructions for setting up a PostgreSQL user and database for the CRS system. The following commands are used to create a new user with specific permissions, create a database, and grant the necessary privileges.
+Instructions for setting up a PostgreSQL user and database for the CRS system. The following commands are used to create a new user with specific permissions, create a database, and grant the necessary privileges.
 
 **_Create a new user with an encrypted password_**:
 
